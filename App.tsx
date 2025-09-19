@@ -5,18 +5,13 @@
  * @format
  */
 
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import COLORS from './src/styles/colors';
+import Auth from './src/pages/Auth';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -42,7 +37,7 @@ function AppContent() {
         paddingBottom: safeAreaInsets.bottom,
       }}
     >
-      <Text>Hello</Text>
+      <Auth />
     </View>
   );
 }
