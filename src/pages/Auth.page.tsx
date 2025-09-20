@@ -10,7 +10,7 @@ type FormProps = {
   setIsLogin: (isLogin: boolean) => void;
 };
 
-const Auth = () => {
+const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   const title = isLogin ? 'Welcome Back' : 'Create Account';
@@ -75,4 +75,4 @@ const styles = StyleSheet.create({
   subtitle: { textAlign: 'center' },
 });
 
-export default Auth;
+export default AuthPage;

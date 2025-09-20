@@ -2,9 +2,10 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FormProps } from './types';
 import commonStyles from '../../styles/common.styles';
 import authStyles from './auth.styles';
-import useFormState from '../../hooks/useFormState';
-import useFormValidation from '../../hooks/useFormValidation';
+import useFormState from '../../hooks/common/useFormState';
+import useFormValidation from '../../hooks/common/useFormValidation';
 import UserSchema from '../../schema/auth.schema';
+import { useUserDetails } from '../../context/user.context';
 
 type LoginForm = {
   email: string;
@@ -25,12 +26,22 @@ const LoginForm = ({ setIsLogin }: FormProps) => {
     resetErrors,
   );
 
+  const { dispatch } = useUserDetails();
+
   const onLogin = () => {
     const values = getValues();
     const isValid = validate(values);
 
     if (!isValid) return;
     // Todo: Make API calls
+
+    dispatch({
+      type: 'SET_USER',
+      payload: {
+        email: values.email,
+        name: 'Hello',
+      },
+    });
   };
 
   return (

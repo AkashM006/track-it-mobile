@@ -5,7 +5,9 @@ Week 4: ( Sep 17 - Sep 23 )
 1. Auth UI and Integration
     - UI ( DONE )
     - Validation ( DONE )
-2. Todos UI and Integration
+    - Routing ( DONE )
+    - Persistence
+2. Expenses UI and Integration
 
 For Later:
 1. Later change the app to use responsive margins and padding
