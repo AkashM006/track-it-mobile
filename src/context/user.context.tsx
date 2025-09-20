@@ -1,36 +1,45 @@
 import React, { createContext, useReducer, ReactNode, useContext } from 'react';
-import { IUser } from '../types/user';
+import { IUser } from '../types/User';
+import { Session } from '../utils/persist.utils';
 
 type UserState = {
   user: IUser | null | undefined;
+  sessionId: Session;
 };
 
-// Action types
 type Action =
   | { type: 'SET_USER'; payload: IUser }
   | { type: 'CLEAR_USER' }
-  | { type: 'UPDATE_USER'; payload: IUser };
+  | { type: 'UPDATE_USER'; payload: IUser }
+  | { type: 'SET_SID'; payload: string };
 
-// Reducer
 function userReducer(state: UserState, action: Action): UserState {
   switch (action.type) {
     case 'SET_USER':
-      return { user: action.payload };
+      return { ...state, user: action.payload };
     case 'CLEAR_USER':
-      return { user: null };
+      return { ...state, user: null };
     case 'UPDATE_USER':
-      return { user: state.user ? { ...state.user, ...action.payload } : null };
+      return {
+        ...state,
+        user: state.user ? { ...state.user, ...action.payload } : null,
+      };
+    case 'SET_SID':
+      return {
+        ...state,
+        sessionId: action.payload,
+      };
     default:
       return state;
   }
 }
 
-// Initial state
-const initialState: UserState = { user: null };
+const initialState: UserState = { user: null, sessionId: null };
 
 type UserContextType = {
   state: UserState;
-  dispatch: React.Dispatch<Action>;
+  setUser: (user: IUser) => void;
+  setSid: (sid: string) => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -42,8 +51,22 @@ type Props = {
 export const UserProvider = ({ children }: Props) => {
   const [state, dispatch] = useReducer(userReducer, initialState);
 
+  const setUser = (user: IUser) => {
+    dispatch({
+      type: 'SET_USER',
+      payload: user,
+    });
+  };
+
+  const setSid = (sid: string) => {
+    dispatch({
+      type: 'SET_SID',
+      payload: sid,
+    });
+  };
+
   return (
-    <UserContext.Provider value={{ state, dispatch }}>
+    <UserContext.Provider value={{ state, setUser, setSid }}>
       {children}
     </UserContext.Provider>
   );

@@ -1,11 +1,18 @@
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FormProps } from './types';
 import commonStyles from '../../styles/common.styles';
 import authStyles from './auth.styles';
-import useFormState from '../../hooks/common/useFormState';
-import useFormValidation from '../../hooks/common/useFormValidation';
+import useFormState from '../../hooks/form/useFormState';
+import useFormValidation from '../../hooks/form/useFormValidation';
 import UserSchema from '../../schema/auth.schema';
 import { useUserDetails } from '../../context/user.context';
+import AuthService, { LoginApiResponse } from '../../services/auth.service';
+import useMutation from '../../hooks/api/useMutation';
+import PersistUtils from '../../utils/persist.utils';
+import useQuery from '../../hooks/api/useQuery';
+import UserService, {
+  UserDetailsApiResponse,
+} from '../../services/user.service';
 
 type LoginForm = {
   email: string;
@@ -26,22 +33,54 @@ const LoginForm = ({ setIsLogin }: FormProps) => {
     resetErrors,
   );
 
-  const { dispatch } = useUserDetails();
+  const {
+    state: { sessionId },
+    setUser,
+    setSid,
+  } = useUserDetails();
 
-  const onLogin = () => {
+  const onApiError = (error: string) => {
+    Alert.alert('Whoops!', error);
+  };
+
+  const onUserDetailsSuccess = async (data: UserDetailsApiResponse) => {
+    const { email, name } = data;
+    setUser({
+      email,
+      name,
+    });
+  };
+
+  const userDetailsQuery = useQuery(UserService.getUserDetails, {
+    idleOnInit: true,
+    onSuccess: onUserDetailsSuccess,
+    onError: onApiError,
+  });
+
+  const onLoginSuccess = async (data: LoginApiResponse) => {
+    await PersistUtils.setSessionId(data.sid);
+    setSid(data.sid);
+
+    if (!data.sid) {
+      Alert.alert('Whoops!', 'Authentication failed');
+      return;
+    }
+    userDetailsQuery.execute(data.sid);
+  };
+
+  const loginMutation = useMutation(AuthService.login, {
+    onSuccess: onLoginSuccess,
+    onError: onApiError,
+  });
+
+  const onLogin = async () => {
+    await PersistUtils.resetSessionId();
     const values = getValues();
     const isValid = validate(values);
 
     if (!isValid) return;
-    // Todo: Make API calls
 
-    dispatch({
-      type: 'SET_USER',
-      payload: {
-        email: values.email,
-        name: 'Hello',
-      },
-    });
+    loginMutation.mutate(values, sessionId);
   };
 
   return (
@@ -84,7 +123,10 @@ const LoginForm = ({ setIsLogin }: FormProps) => {
       </TouchableOpacity>
       <View style={authStyles.actionContainer}>
         <Text>Don't have an account?</Text>
-        <TouchableOpacity onPress={() => setIsLogin(false)}>
+        <TouchableOpacity
+          disabled={loginMutation.isLoading}
+          onPress={() => setIsLogin(false)}
+        >
           <Text style={authStyles.action}>Register here</Text>
         </TouchableOpacity>
       </View>

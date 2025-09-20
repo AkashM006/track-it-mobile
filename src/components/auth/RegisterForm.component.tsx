@@ -2,8 +2,8 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FormProps } from './types';
 import commonStyles from '../../styles/common.styles';
 import authStyles from './auth.styles';
-import useFormState from '../../hooks/common/useFormState';
-import useFormValidation from '../../hooks/common/useFormValidation';
+import useFormState from '../../hooks/form/useFormState';
+import useFormValidation from '../../hooks/form/useFormValidation';
 import UserSchema from '../../schema/auth.schema';
 
 type RegisterForm = {

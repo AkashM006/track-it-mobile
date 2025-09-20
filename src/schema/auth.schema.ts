@@ -23,8 +23,6 @@ const baseUserSchema = z.object(
 const userRegistrationSchema = baseUserSchema.superRefine((value, ctx) => {
   const { password, confirmPassword } = value;
 
-  console.log({ password, confirmPassword });
-
   if (password !== confirmPassword) {
     ctx.addIssue({
       code: 'custom',
