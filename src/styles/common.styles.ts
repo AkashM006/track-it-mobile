@@ -12,6 +12,10 @@ const formStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: `rgba(${COLORS.gray}, 0.4)`,
   },
+  errorText: {
+    fontSize: REM * 0.75,
+    color: COLORS.errorAccent,
+  },
 });
 
 const buttonStyles = StyleSheet.create({
