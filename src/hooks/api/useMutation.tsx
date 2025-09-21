@@ -43,6 +43,7 @@ const useMutation = <TArgs extends any[], TResult>(
         error,
         data: null,
       });
+      options?.onError?.(error);
     }
   };
 

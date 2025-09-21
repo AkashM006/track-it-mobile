@@ -40,6 +40,7 @@ const LoginForm = ({ setIsLogin }: FormProps) => {
   } = useUserDetails();
 
   const onApiError = (error: string) => {
+    console.error({ error });
     Alert.alert('Whoops!', error);
   };
 
@@ -62,6 +63,7 @@ const LoginForm = ({ setIsLogin }: FormProps) => {
     setSid(data.sid);
 
     if (!data.sid) {
+      console.error('Whoops: Auth Failed, did not get sid from server');
       Alert.alert('Whoops!', 'Authentication failed');
       return;
     }
@@ -74,7 +76,6 @@ const LoginForm = ({ setIsLogin }: FormProps) => {
   });
 
   const onLogin = async () => {
-    await PersistUtils.resetSessionId();
     const values = getValues();
     const isValid = validate(values);
 

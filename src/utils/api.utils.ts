@@ -1,16 +1,22 @@
 import { API_LINK } from '../config/api.config';
 import ApiResponse from '../types/ApiResponse';
 
+const timeout = 15 * 1000;
+
 const get = async <T>(
   link: string,
   sessionId: string | undefined | null,
 ): Promise<ApiResponse<T>> => {
-  let result;
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  let response;
   try {
-    result = await fetch(`${API_LINK}${link}`, {
+    response = await fetch(`${API_LINK}${link}`, {
       headers: {
         Authorization: `Session ${sessionId}`,
       },
+      signal: controller.signal,
     });
   } catch (error) {
     console.error({ error });
@@ -19,10 +25,12 @@ const get = async <T>(
       msg: ['Unable to reach server'],
       success: false,
     };
+  } finally {
+    clearTimeout(id);
   }
 
   try {
-    const parsedResponse: ApiResponse<T> = await result.json();
+    const parsedResponse: ApiResponse<T> = await response.json();
 
     return parsedResponse;
   } catch (error) {
@@ -39,7 +47,11 @@ const post = async <T>(
   link: string,
   body: Record<string, any>,
   sessionId: string | undefined | null,
+  method: string = 'POST',
 ): Promise<ApiResponse<T>> => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
   let result;
   try {
     result = await fetch(`${API_LINK}${link}`, {
@@ -47,7 +59,7 @@ const post = async <T>(
         'Content-Type': 'application/json',
         Authorization: `Session ${sessionId ?? ''}`,
       },
-      method: 'POST',
+      method,
       body: JSON.stringify(body),
     });
   } catch (error) {
@@ -57,6 +69,8 @@ const post = async <T>(
       msg: ['Unable to reach server'],
       success: false,
     };
+  } finally {
+    clearTimeout(id);
   }
 
   try {

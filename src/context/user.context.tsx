@@ -1,4 +1,10 @@
-import React, { createContext, useReducer, ReactNode, useContext } from 'react';
+import React, {
+  createContext,
+  useReducer,
+  ReactNode,
+  useContext,
+  useCallback,
+} from 'react';
 import { IUser } from '../types/User';
 import { Session } from '../utils/persist.utils';
 
@@ -18,7 +24,7 @@ function userReducer(state: UserState, action: Action): UserState {
     case 'SET_USER':
       return { ...state, user: action.payload };
     case 'CLEAR_USER':
-      return { ...state, user: null };
+      return { ...state, user: null, sessionId: null };
     case 'UPDATE_USER':
       return {
         ...state,
@@ -40,6 +46,7 @@ type UserContextType = {
   state: UserState;
   setUser: (user: IUser) => void;
   setSid: (sid: string) => void;
+  logout: () => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -51,22 +58,28 @@ type Props = {
 export const UserProvider = ({ children }: Props) => {
   const [state, dispatch] = useReducer(userReducer, initialState);
 
-  const setUser = (user: IUser) => {
+  const setUser = useCallback((user: IUser) => {
     dispatch({
       type: 'SET_USER',
       payload: user,
     });
-  };
+  }, []);
 
-  const setSid = (sid: string) => {
+  const setSid = useCallback((sid: string) => {
     dispatch({
       type: 'SET_SID',
       payload: sid,
     });
-  };
+  }, []);
+
+  const logout = useCallback(() => {
+    dispatch({
+      type: 'CLEAR_USER',
+    });
+  }, []);
 
   return (
-    <UserContext.Provider value={{ state, setUser, setSid }}>
+    <UserContext.Provider value={{ state, setUser, setSid, logout }}>
       {children}
     </UserContext.Provider>
   );

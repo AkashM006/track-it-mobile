@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import ApiResponse from '../../types/ApiResponse';
 import { QueryState } from '../../types/MutationState';
 
@@ -14,40 +14,46 @@ const useQuery = <TArgs extends any[], TResult>(
   queryFn: (...args: TArgs) => Promise<ApiResponse<TResult>>,
   options: UseQueryOptions<TResult, TArgs>,
 ) => {
-  const initialValue = {
-    status: options.idleOnInit ? ('idle' as const) : ('loading' as const),
-    error: null,
-    data: options.initialData,
-  };
+  const initialValue = useMemo(() => {
+    return {
+      status: options.idleOnInit ? ('idle' as const) : ('loading' as const),
+      error: null,
+      data: options.initialData,
+    };
+  }, [options]);
 
   const [queryState, setQueryState] =
     useState<QueryState<TResult>>(initialValue);
 
-  const execute = async (...args: TArgs) => {
-    setQueryState({
-      ...initialValue,
-      status: 'loading',
-    });
-
-    const result = await queryFn(...args);
-
-    if (result.success) {
-      const data = result.results;
+  const execute = useCallback(
+    async (...args: TArgs) => {
       setQueryState({
-        status: 'success',
-        error: null,
-        data,
+        ...initialValue,
+        status: 'loading',
       });
-      options?.onSuccess?.(data!, ...args);
-    } else {
-      const error = result.msg?.[0] ?? 'Something went wrong';
-      setQueryState({
-        status: 'error',
-        error,
-        data: null,
-      });
-    }
-  };
+
+      const result = await queryFn(...args);
+
+      if (result.success) {
+        const data = result.results;
+        setQueryState({
+          status: 'success',
+          error: null,
+          data,
+        });
+        options?.onSuccess?.(data!, ...args);
+      } else {
+        const error = result.msg?.[0] ?? 'Something went wrong';
+        setQueryState({
+          status: 'error',
+          error,
+          data: null,
+        });
+        options?.onError?.(error);
+      }
+    },
+    [initialValue, options, queryFn, setQueryState],
+  );
 
   return { execute, queryState };
 };
