@@ -6,13 +6,13 @@ Week 4: ( Sep 17 - Sep 23 )
     - UI ( DONE )
     - Validation ( DONE )
     - Routing ( DONE )
-    - Persistence
-    - API Integration
+    - Persistence ( DONE )
+    - API Integration ( DONE )
 2. Expenses UI and Integration
 
 For Later:
 1. Later change the app to use responsive margins and padding
 2. Make an Form Field into a re-usable component
 3. Keep a global loader and manage with context, maybe integrate it with useQuery and useMutation
-4. Store sessionId in context everytime the app loads
-5. Alert is not working, check that
+4. Store sessionId in context everytime the app loads ( DONE )
+5. Alert is not working, check that ( DONE )

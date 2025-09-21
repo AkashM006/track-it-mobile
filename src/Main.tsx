@@ -2,6 +2,7 @@ import { useState } from 'react';
 import AppNavigation from './routes/navigation';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import UserDetailsComponent from './components/home/UserDetails.component';
+import Loader from './components/common/Loader.component';
 
 const Main = () => {
   const [loading, setLoading] = useState(true);
@@ -16,7 +17,12 @@ const Main = () => {
     );
   }
 
-  return <AppNavigation />;
+  return (
+    <>
+      <Loader />
+      <AppNavigation />
+    </>
+  );
 };
 
 const styles = StyleSheet.create({

@@ -12,7 +12,7 @@ import {
 } from 'react-native-safe-area-context';
 import COLORS from './src/styles/colors';
 import Main from './src/Main';
-import { UserProvider } from './src/context/user.context';
+import Providers from './src/context/providers';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -38,9 +38,9 @@ function AppContent() {
         paddingBottom: safeAreaInsets.bottom,
       }}
     >
-      <UserProvider>
+      <Providers>
         <Main />
-      </UserProvider>
+      </Providers>
     </View>
   );
 }
