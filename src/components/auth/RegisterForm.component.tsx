@@ -1,10 +1,19 @@
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FormProps } from './types';
 import commonStyles from '../../styles/common.styles';
 import authStyles from './auth.styles';
 import useFormState from '../../hooks/form/useFormState';
 import useFormValidation from '../../hooks/form/useFormValidation';
 import UserSchema from '../../schema/auth.schema';
+import useMutation from '../../hooks/api/useMutation';
+import AuthService, { RegisterApiResponse } from '../../services/auth.service';
+import { useUserDetails } from '../../context/user.context';
+import PersistUtils from '../../utils/persist.utils';
+import UserService, {
+  UserDetailsApiResponse,
+} from '../../services/user.service';
+import useQuery from '../../hooks/api/useQuery';
+import { IRegisterUser } from '../../types/User';
 
 type RegisterForm = {
   name: string;
@@ -21,6 +30,11 @@ const initForm: RegisterForm = {
 };
 
 const RegisterForm = ({ setIsLogin }: FormProps) => {
+  const {
+    state: { sessionId },
+    setUser,
+    setSid,
+  } = useUserDetails();
   const { formState, setError, resetErrors, getValues, onChange } =
     useFormState<RegisterForm>(initForm);
   const { validate } = useFormValidation<RegisterForm>(
@@ -29,13 +43,55 @@ const RegisterForm = ({ setIsLogin }: FormProps) => {
     resetErrors,
   );
 
+  const onApiError = (error: string) => {
+    console.error({ error });
+    Alert.alert('Whoops!', error);
+  };
+
+  const onUserDetailsSuccess = async (data: UserDetailsApiResponse) => {
+    const { email, name } = data;
+    setUser({
+      email,
+      name,
+    });
+  };
+
+  const userDetailsQuery = useQuery(UserService.getUserDetails, {
+    idleOnInit: true,
+    onSuccess: onUserDetailsSuccess,
+    onError: onApiError,
+  });
+
+  const onRegisterSuccess = async (data: RegisterApiResponse) => {
+    await PersistUtils.setSessionId(data.sid);
+    setSid(data.sid);
+
+    if (!data.sid) {
+      console.error('Whoops: Auth Failed, did not get sid from server');
+      Alert.alert('Whoops!', 'Authentication failed');
+      return;
+    }
+    userDetailsQuery.execute(data.sid);
+  };
+
+  const registerMutation = useMutation(AuthService.register, {
+    onSuccess: onRegisterSuccess,
+    onError: onApiError,
+  });
+
   const onRegister = () => {
     const values = getValues();
     const isValid = validate(values);
 
     if (!isValid) return;
 
-    // Todo: Make API calls
+    const user: IRegisterUser = {
+      email: values.email,
+      name: values.name,
+      password: values.password,
+    };
+
+    registerMutation.mutate(user, sessionId);
   };
 
   return (
