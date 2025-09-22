@@ -8,7 +8,10 @@ Week 4: ( Sep 17 - Sep 23 )
     - Routing ( DONE )
     - Persistence ( DONE )
     - API Integration ( DONE )
-2. Expenses UI and Integration
+2. Expenses UI and Integration ( Setup took too long, overestimation :_) )
+
+Week 5: ( Sep 24 - Sep 30 )
+1. Expenses UI and Integration
 
 For Later:
 1. Later change the app to use responsive margins and padding
