@@ -2,7 +2,7 @@ TODO:
 
 Planned:
 Week 4: ( Sep 17 - Sep 23 )
-1. Auth UI and Integration
+1. Auth UI and Integration ( DONE )
     - UI ( DONE )
     - Validation ( DONE )
     - Routing ( DONE )

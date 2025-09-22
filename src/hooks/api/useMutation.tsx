@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { MutationState } from '../../types/MutationState';
 import ApiResponse from '../../types/ApiResponse';
+import { useCommonUI } from '../../context/commonUI.context';
 
 export type UseMutationOptions<T, TArgs extends any[]> = {
   onSuccess?: (data: T, ...args: TArgs) => void;
   onError?: (error: string) => void;
+  showLoader?: boolean;
 };
 
 const useMutation = <TArgs extends any[], TResult>(
@@ -20,11 +22,17 @@ const useMutation = <TArgs extends any[], TResult>(
   const [mutationState, setMutationState] =
     useState<MutationState<TResult>>(initialValue);
 
+  const { load } = useCommonUI();
+
+  const showLoader = options?.showLoader ?? true;
+
   const mutate = async (...args: TArgs) => {
     setMutationState({
       ...initialValue,
       status: 'loading',
     });
+
+    if (showLoader) load(true);
 
     const result = await mutationFn(...args);
 
@@ -35,6 +43,7 @@ const useMutation = <TArgs extends any[], TResult>(
         error: null,
         data,
       });
+      if (showLoader) load(false);
       options?.onSuccess?.(data!, ...args);
     } else {
       const error = result.msg?.[0] ?? 'Something went wrong';
@@ -43,6 +52,7 @@ const useMutation = <TArgs extends any[], TResult>(
         error,
         data: null,
       });
+      if (showLoader) load(false);
       options?.onError?.(error);
     }
   };

@@ -13,6 +13,7 @@ import useQuery from '../../hooks/api/useQuery';
 import UserService, {
   UserDetailsApiResponse,
 } from '../../services/user.service';
+import { useCommonUI } from '../../context/commonUI.context';
 
 type LoginForm = {
   email: string;
@@ -38,6 +39,9 @@ const LoginForm = ({ setIsLogin }: FormProps) => {
     setUser,
     setSid,
   } = useUserDetails();
+  const {
+    state: { isLoading },
+  } = useCommonUI();
 
   const onApiError = (error: string) => {
     console.error({ error });
@@ -117,16 +121,21 @@ const LoginForm = ({ setIsLogin }: FormProps) => {
         ) : null}
       </View>
       <TouchableOpacity
-        style={commonStyles.buttonStyles.primary}
+        style={{
+          ...commonStyles.buttonStyles.primary,
+          ...(isLoading ? commonStyles.buttonStyles.disabled : {}),
+        }}
         onPress={onLogin}
+        disabled={isLoading}
       >
         <Text style={commonStyles.buttonStyles.primaryText}>Login</Text>
       </TouchableOpacity>
       <View style={authStyles.actionContainer}>
         <Text>Don't have an account?</Text>
         <TouchableOpacity
-          disabled={loginMutation.isLoading}
+          disabled={isLoading}
           onPress={() => setIsLogin(false)}
+          style={isLoading ? commonStyles.buttonStyles.disabled : {}}
         >
           <Text style={authStyles.action}>Register here</Text>
         </TouchableOpacity>

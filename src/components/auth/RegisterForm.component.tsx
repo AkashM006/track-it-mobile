@@ -14,6 +14,7 @@ import UserService, {
 } from '../../services/user.service';
 import useQuery from '../../hooks/api/useQuery';
 import { IRegisterUser } from '../../types/User';
+import { useCommonUI } from '../../context/commonUI.context';
 
 type RegisterForm = {
   name: string;
@@ -30,11 +31,6 @@ const initForm: RegisterForm = {
 };
 
 const RegisterForm = ({ setIsLogin }: FormProps) => {
-  const {
-    state: { sessionId },
-    setUser,
-    setSid,
-  } = useUserDetails();
   const { formState, setError, resetErrors, getValues, onChange } =
     useFormState<RegisterForm>(initForm);
   const { validate } = useFormValidation<RegisterForm>(
@@ -42,6 +38,15 @@ const RegisterForm = ({ setIsLogin }: FormProps) => {
     setError,
     resetErrors,
   );
+
+  const {
+    state: { sessionId },
+    setUser,
+    setSid,
+  } = useUserDetails();
+  const {
+    state: { isLoading },
+  } = useCommonUI();
 
   const onApiError = (error: string) => {
     console.error({ error });
@@ -156,7 +161,11 @@ const RegisterForm = ({ setIsLogin }: FormProps) => {
         ) : null}
       </View>
       <TouchableOpacity
-        style={commonStyles.buttonStyles.primary}
+        disabled={isLoading}
+        style={{
+          ...commonStyles.buttonStyles.primary,
+          ...(isLoading ? commonStyles.buttonStyles.disabled : {}),
+        }}
         onPress={onRegister}
       >
         <Text style={commonStyles.buttonStyles.primaryText}>
@@ -165,7 +174,11 @@ const RegisterForm = ({ setIsLogin }: FormProps) => {
       </TouchableOpacity>
       <View style={authStyles.actionContainer}>
         <Text>Already have an account?</Text>
-        <TouchableOpacity onPress={() => setIsLogin(true)}>
+        <TouchableOpacity
+          disabled={isLoading}
+          style={isLoading ? commonStyles.buttonStyles.disabled : {}}
+          onPress={() => setIsLogin(true)}
+        >
           <Text style={authStyles.action}>Login here</Text>
         </TouchableOpacity>
       </View>

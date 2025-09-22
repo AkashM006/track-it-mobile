@@ -60,6 +60,7 @@ const post = async <T>(
         Authorization: `Session ${sessionId ?? ''}`,
       },
       method,
+      signal: controller.signal,
       body: JSON.stringify(body),
     });
   } catch (error) {

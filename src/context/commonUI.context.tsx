@@ -1,4 +1,10 @@
-import React, { createContext, useReducer, ReactNode, useContext } from 'react';
+import React, {
+  createContext,
+  useReducer,
+  ReactNode,
+  useContext,
+  useCallback,
+} from 'react';
 
 type CommonUIState = {
   isLoading: boolean;
@@ -33,12 +39,12 @@ type Props = {
 export const CommonUIProvider = ({ children }: Props) => {
   const [state, dispatch] = useReducer(commonUIReducer, initialState);
 
-  const load = (isLoading: boolean) => {
+  const load = useCallback((isLoading: boolean) => {
     dispatch({
       type: 'SET_LOADING',
       payload: isLoading,
     });
-  };
+  }, []);
 
   return (
     <CommonUIContext.Provider value={{ state, load }}>

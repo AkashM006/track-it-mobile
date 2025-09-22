@@ -28,6 +28,9 @@ const buttonStyles = StyleSheet.create({
     color: COLORS.onPrimary,
     textAlign: 'center',
   },
+  disabled: {
+    opacity: 0.4,
+  },
 });
 
 const commonStyles = { formStyles, buttonStyles };
