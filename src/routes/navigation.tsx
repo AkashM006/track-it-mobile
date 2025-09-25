@@ -10,7 +10,12 @@ const RootStack = createNativeStackNavigator({
     LoggedIn: {
       if: useIsSignedIn,
       screens: {
-        Home: HomePage,
+        Home: {
+          screen: HomePage,
+          options: {
+            headerShown: false,
+          },
+        },
       },
     },
     LoggedOut: {

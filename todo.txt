@@ -19,3 +19,6 @@ For Later:
 3. Keep a global loader and manage with context, maybe integrate it with useQuery and useMutation ( DONE )
 4. Store sessionId in context everytime the app loads ( DONE )
 5. Alert is not working, check that ( DONE )
+6. Make the header in home page sticky
+7. Show gradient color as header bg
+8. Make the status bar color also to match header background
