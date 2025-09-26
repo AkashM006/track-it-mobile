@@ -22,3 +22,4 @@ For Later:
 6. Make the header in home page sticky
 7. Show gradient color as header bg
 8. Make the status bar color also to match header background
+9. Make part of the list header sticky

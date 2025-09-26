@@ -31,6 +31,11 @@ const buttonStyles = StyleSheet.create({
   disabled: {
     opacity: 0.4,
   },
+  secondary: {
+    backgroundColor: COLORS.surfaceLight,
+    padding: REM * 0.5,
+    borderRadius: REM,
+  },
 });
 
 const commonStyles = { formStyles, buttonStyles };

@@ -9,7 +9,7 @@ import useMutation from '../../hooks/api/useMutation';
 import AuthService from '../../services/auth.service';
 import PersistUtils from '../../utils/persist.utils';
 
-const HeaderComponent = () => {
+const PageHeaderComponent = () => {
   const {
     state: { user, sessionId },
     logout,
@@ -110,4 +110,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HeaderComponent;
+export default PageHeaderComponent;
