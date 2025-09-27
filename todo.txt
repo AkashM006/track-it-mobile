@@ -23,3 +23,5 @@ For Later:
 7. Show gradient color as header bg
 8. Make the status bar color also to match header background
 9. Make part of the list header sticky
+10. Change calendar styles
+11. Date picker must have a separate state, only when clicking check the state must be set

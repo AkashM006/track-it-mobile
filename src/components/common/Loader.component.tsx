@@ -1,5 +1,4 @@
 import { View, Modal, ActivityIndicator, StyleSheet } from 'react-native';
-import React from 'react';
 import REM from '../../styles/size';
 import { useCommonUI } from '../../context/commonUI.context';
 import COLORS from '../../styles/colors';
@@ -14,7 +13,7 @@ const Loader = () => {
       visible={isLoading}
       animationType="fade"
       statusBarTranslucent={true}
-      backdropColor={`rgba(#000,0.4)`}
+      backdropColor={COLORS.backdropBg}
     >
       <View style={styles.overlayContainer}>
         <View style={styles.loaderContainer}>

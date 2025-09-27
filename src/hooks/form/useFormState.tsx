@@ -10,13 +10,14 @@ type FormState<T extends Record<string, any>> = {
 };
 
 const useFormState = <T extends Record<string, any>>(initialValues: T) => {
-  const [formState, setFormState] = useState<FormState<T>>(() => {
+  const initializor = () => {
     const init: any = {};
     for (const key in initialValues) {
       init[key] = { value: initialValues[key] ?? '', error: undefined };
     }
     return init;
-  });
+  };
+  const [formState, setFormState] = useState<FormState<T>>(initializor);
 
   const onChange = <K extends keyof T>(field: K, value: string) => {
     setFormState(prev => ({
@@ -52,6 +53,16 @@ const useFormState = <T extends Record<string, any>>(initialValues: T) => {
     ) as T;
   };
 
+  const resetValues = () => {
+    const initValues = initializor();
+    setFormState(initValues);
+  };
+
+  const resetFormState = () => {
+    resetValues();
+    resetErrors();
+  };
+
   return {
     formState,
     onChange,
@@ -59,6 +70,8 @@ const useFormState = <T extends Record<string, any>>(initialValues: T) => {
     getValues,
     setFormState,
     resetErrors,
+    resetValues,
+    resetFormState,
   };
 };
 

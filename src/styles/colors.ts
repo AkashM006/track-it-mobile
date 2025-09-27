@@ -40,7 +40,7 @@ const COLORS = {
 
   gray: '#999',
   errorAccent: 'rgb(194, 29, 29)',
-  backdropBg: 'rgba(#000, 0.6)',
+  backdropBg: hexToRgba('#000', 0.4),
 };
 
 export default COLORS;

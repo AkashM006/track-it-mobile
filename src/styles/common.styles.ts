@@ -11,6 +11,17 @@ const formStyles = StyleSheet.create({
     borderRadius: REM * 0.5,
     borderWidth: 1,
     borderColor: `rgba(${COLORS.gray}, 0.4)`,
+    paddingInline: 0.5 * REM,
+  },
+  datePickerInput: {
+    borderRadius: REM * 0.5,
+    borderWidth: 1,
+    borderColor: `rgba(${COLORS.gray}, 0.4)`,
+    paddingBlock: 0.5 * REM,
+    paddingInline: 0.5 * REM,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   errorText: {
     fontSize: REM * 0.75,
@@ -18,23 +29,42 @@ const formStyles = StyleSheet.create({
   },
 });
 
-const buttonStyles = StyleSheet.create({
-  primary: {
-    backgroundColor: COLORS.primaryColor,
+const baseButton = StyleSheet.create({
+  btn: {
     padding: REM * 0.5,
     borderRadius: REM,
   },
-  primaryText: {
-    color: COLORS.onPrimary,
+  text: {
     textAlign: 'center',
+    color: COLORS.accent,
+  },
+});
+
+const buttonStyles = StyleSheet.create({
+  primary: {
+    ...baseButton.btn,
+    backgroundColor: COLORS.primaryColor,
+  },
+  primaryText: {
+    ...baseButton.text,
+    color: COLORS.onPrimary,
   },
   disabled: {
     opacity: 0.4,
   },
   secondary: {
+    ...baseButton.btn,
     backgroundColor: COLORS.surfaceLight,
-    padding: REM * 0.5,
-    borderRadius: REM,
+  },
+  secondaryText: {
+    ...baseButton.text,
+  },
+  tertiary: {
+    ...baseButton.btn,
+    backgroundColor: COLORS.surfaceDark,
+  },
+  tertiaryText: {
+    ...baseButton.text,
   },
 });
 
